@@ -41,6 +41,7 @@ in with lib; {
         lazy-nvim
         telescope-nvim
         plenary-nvim
+        catppuccin-nvim
       ];
       extraLuaConfig = ''
         local plugins = {

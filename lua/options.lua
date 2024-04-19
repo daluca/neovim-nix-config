@@ -4,3 +4,5 @@ opt.number = true
 opt.relativenumber = true
 
 opt.scrolloff = 8
+
+vim.cmd.colorscheme "catppuccin"

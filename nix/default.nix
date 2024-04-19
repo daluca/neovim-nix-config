@@ -12,7 +12,7 @@
   sanitizePluginName = input:
   let
     name = lib.strings.getName input;
-    intermediate = lib.strings.removePrefix "vimplugins-" name;
+    intermediate = lib.strings.removePrefix "vimplugin-" name;
     result = lib.strings.removePrefix "lua5.1-" intermediate;
   in result;
 
@@ -41,6 +41,7 @@ in with lib; {
         lazy-nvim
         telescope-nvim
         plenary-nvim
+        catppuccin-nvim
       ];
       extraLuaConfig = ''
         local plugins = {

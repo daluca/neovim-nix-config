@@ -35,7 +35,6 @@ in with lib; {
 
     programs.neovim = {
       enable = true;
-      package = pkgs.neovim-unwrapped;
       plugins = with pkgs.vimPlugins; [
         lazy-nix-helper-nvim
         lazy-nvim

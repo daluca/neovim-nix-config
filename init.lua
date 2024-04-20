@@ -26,8 +26,12 @@ local non_nix_lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 local lazy_nix_helper_opts = { lazypath = non_nix_lazypath, input_plugin_table = plugins }
 require("lazy-nix-helper").setup(lazy_nix_helper_opts)
 
+function plugin_path(plugin)
+    return require("lazy-nix-helper").get_plugin_path(plugin)
+end
+
 -- get the lazypath from Lazy Nix Helper
-local lazypath_nix = require("lazy-nix-helper").get_plugin_path("lazy.nvim")
+local lazypath_nix = plugin_path("lazy.nvim")
 local lazypath
 if lazypath_nix ~= nil then
     lazypath = lazypath_nix

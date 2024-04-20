@@ -56,4 +56,4 @@ vim.g.mapleader = " "
 -- install and load plugins from your configuration
 require("lazy").setup("plugins")
 
-require("options")
+require("config")

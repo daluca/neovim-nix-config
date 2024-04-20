@@ -1,4 +1,12 @@
-local lazy_nix_helper_path = vim.fn.stdpath("data") .. "/lazy/lazy-nix-helper.nvim"
+local lazy_nix_helper_path_local = vim.fn.stdpath("data") .. "/lazy/lazy-nix-helper.nvim"
+local lazy_nix_helper_path
+
+if lazy_nix_helper_path_nix ~= nil then
+    lazy_nix_helper_path = lazy_nix_helper_path_nix
+else
+    lazy_nix_helper_path = lazy_nix_helper_path_local
+end
+
 if not vim.loop.fs_stat(lazy_nix_helper_path) then
 vim.fn.system({
     "git",
@@ -13,9 +21,22 @@ end
 -- add the Lazy Nix Helper plugin to the vim runtime
 vim.opt.rtp:prepend(lazy_nix_helper_path)
 
+-- call the Lazy Nix Helper setup function
+local non_nix_lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazy_nix_helper_opts = { lazypath = non_nix_lazypath, input_plugin_table = plugins }
+require("lazy-nix-helper").setup(lazy_nix_helper_opts)
+
+-- get the lazypath from Lazy Nix Helper
+local lazypath_nix = require("lazy-nix-helper").get_plugin_path("lazy.nvim")
+local lazypath
+if lazypath_nix ~= nil then
+    lazypath = lazypath_nix
+else
+    lazypath = non_nix_lazypath
+end
+
 -- set lazypath variable to the path where the Lazy plugin will be installed on your system
 -- if Lazy is not already installed there, download and install it
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",

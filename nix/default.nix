@@ -19,7 +19,41 @@
   pluginList = plugins: lib.strings.concatMapStrings (plugin: "  [\"${sanitizePluginName plugin.name}\"] = \"${plugin.outPath}\",\n") plugins;
 in with lib; {
   options.neovim-nix = {
-    enable = mkEnableOption "NeoVim nix";
+    enable = mkEnableOption ''
+      Enable neovim with lazy custom config
+    '';
+
+    vimAlias = mkEnableOption ''
+      Enable vim to be aliased to neovim
+    '';
+
+    package = mkOption {
+      type = types.package;
+      default = pkgs.neovim-unwrapped;
+    };
+
+    extraPackages = mkOption {
+      type = with types; listOf package;
+      default = with pkgs; [
+        fd
+        ripgrep
+      ];
+    };
+
+    plugins = mkOption {
+      type = with types; listOf package;
+      default = with pkgs.vimPlugins; [
+        lazy-nvim
+        telescope-nvim
+        plenary-nvim
+        catppuccin-nvim
+        nvim-treesitter
+        vim-fugitive
+        lualine-nvim
+        nvim-web-devicons
+        which-key-nvim
+      ];
+    };
   };
 
   config = mkIf config.neovim-nix.enable {
@@ -28,26 +62,21 @@ in with lib; {
       recursive = true;
     };
 
-    home.packages = with pkgs; [
-      fd
-      ripgrep
-    ];
+    home.packages = mkIf (config.neovim-nix.extraPackages != []) config.neovim-nix.extraPackages;
 
     programs.neovim = {
       enable = true;
-      plugins = with pkgs.vimPlugins; [
-        lazy-nix-helper-nvim
-        lazy-nvim
-        telescope-nvim
-        plenary-nvim
-        catppuccin-nvim
-      ];
+      package = config.neovim-nix.package;
+      vimAlias = config.neovim-nix.vimAlias;
+      plugins = [lazy-nix-helper-nvim] ++ config.neovim-nix.plugins;
       extraLuaConfig = ''
         -- Provide nix-store plugin paths
         local plugins = {
         ${pluginList config.programs.neovim.plugins}
         }
+
         local lazy_nix_helper_path_nix = "${lazy-nix-helper-nvim}"
+
         -- Normal init.lua file from this point onwards
       '' + (builtins.readFile ../init.lua);
     };

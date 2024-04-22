@@ -10,4 +10,4 @@ opt.tabstop = 2
 opt.softtabstop = 2
 opt.shiftwidth = 2
 
-vim.cmd.colorscheme("catppuccin")
+opt.cursorline = true
